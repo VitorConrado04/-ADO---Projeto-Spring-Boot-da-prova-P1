@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Jogos</title>
+  <style> /* *** CÓDIGO CSS OMITIDO *** */ </style>
+</head>
+
+<body>
+<h1>TADS DSW - Prova 1</h1>
+<h2>Cadastro de Jogos de Video Game</h2>
+<form id="jogoForm" novalidate>
+  <div>
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" />
+  </div>
+  <div>
+    <label for="anoLancamento">Ano de lançamento:</label>
+    <input type="text" id="anoLancamento" name="anoLancamento" placeholder="Ex: 2020" />
+  </div>
+  <div>
+    <label for="plataforma">Plataforma:</label>
+    <input type="text" id="plataforma" name="plataforma" placeholder="Ex: PS5" />
+  </div>
+  <button type="submit">Incluir</button>
+</form>
+<script>
+  async function incluir(evt) {
+      evt.preventDefault();
+      const formEl = evt.target; // equivale a document.getElementById('jogoForm')
+
+      const dados = {
+          titulo: formEl.titulo.value,
+          anoLancamento: Number(formEl.anoLancamento.value),
+          plataforma: formEl.plataforma.value
+      };
+
+      try {
+          const httpResp = await fetch('/jogos', { // <========== *** QUESTÃO 6 ***
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(dados)
+          });
+
+          if (!httpResp.ok) {
+              alert('Erro ao cadastrar jogo. Status: ' + httpResp.status);
+              return;
+          }
+          alert('Jogo cadastrado com sucesso. Status: ' + httpResp.status);
+          formEl.reset();
+      } catch (err) {
+          alert("Não foi possível conectar ao servidor.");
+      }
+  }
+
+  // Evento para o submit do formulário de cadastro
+  document.getElementById('jogoForm').addEventListener('submit', async (evt) => {
+      await incluir(evt);
+  });
+</script>
+</body>
+</html>
